@@ -35,11 +35,10 @@ def handler(event,context):
         print('Function failed due to exception.')
         print(e)
         traceback.print_exc()
-        put_job_failure(job_id, 'Function exception: ' + str(e))
+        put_job_failure(job_id, f'Function exception: {str(e)}')
 
 def load_data(objfile):
-    mappings = json.loads(objfile, parse_float=decimal.Decimal)
-    return mappings
+    return json.loads(objfile, parse_float=decimal.Decimal)
 def insert_update_data(response):
     createtable()
     dynamodb_client.put_item(

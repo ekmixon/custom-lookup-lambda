@@ -31,7 +31,7 @@ def initialize():
 
 def handler(event, context):
     print(event)
-    if event['RequestType'] == 'Create' or event['RequestType'] == 'Update':
+    if event['RequestType'] in ['Create', 'Update']:
         initialize()
         if os.getenv('method') != "query":
             sampledata = load_data()
@@ -73,10 +73,7 @@ def get_data(event):
     )
     for item in response['Items']:
         objkeypair = ast.literal_eval(item['mappings'])
-        if 'lookup' in event:
-            return objkeypair[event['lookup']]
-        else:
-            return objkeypair
+        return objkeypair[event['lookup']] if 'lookup' in event else objkeypair
 
 
 def respond_cloudformation(event, status, data=None):
@@ -90,7 +87,7 @@ def respond_cloudformation(event, status, data=None):
         'Data': data
     }
 
-    print('Response = ' + json.dumps(responseBody))
+    print(f'Response = {json.dumps(responseBody)}')
     requests.put(event['ResponseURL'], data=json.dumps(responseBody))
 
 
